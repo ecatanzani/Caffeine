@@ -50,18 +50,34 @@ def weight(measurements: dict, color: str):
     with weight_macro:
         plots.macro_plain(measurements, style_color=color)
     with weight_macro_stack:
-        plots.macro_stack(measurements, style_color=color)
-
+        plots.macro_stack(measurements)
     plots.single_histo_with_mean(measurements, yvar="weight", yvar_name="Weight (Kg)", plot_title="Weight Distribution", style_color=color)
+
+    wcorr_macro1, wcorr_macro2, wcorr_macro3 = st.columns(3)
+    with wcorr_macro1:
+        plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="macro1", yvar_name="Macro 1", plot_title="Weight and Macro 1 correlation", style_color=color)
+    with wcorr_macro2:
+        plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="macro2", yvar_name="Macro 2", plot_title="Weight and Macro 2 correlation", style_color=color)
+    with wcorr_macro3:
+        plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="macro3", yvar_name="Macro 3", plot_title="Weight and Macro 3 correlation", style_color=color)
+    plots.weight_macro_correlation_plot(measurements)
 
 def shoulders(measurements: dict, color: str):
     st.write('**Shoulders**')
-    plots.single_plot(measurements, yvar="shoulder", yvar_name="Shoulder (cm)", plot_title="Shoulder Time Evolution", style_color=color)
+    shoulder_chart, shoulder_histo = st.columns(2)
+    with shoulder_chart:
+        plots.single_plot(measurements, yvar="shoulder", yvar_name="Shoulder (cm)", plot_title="Shoulder Time Evolution", style_color=color)
+    with shoulder_histo:
+        plots.single_histo_with_mean(measurements, yvar="shoulder", yvar_name="Shoulder (cm)", plot_title="Shoulder Distribution", style_color=color)
 
 def legs(measurements: dict, color: str):
     st.write('**Legs**')
-    right_leg, left_leg = st.columns(2)
+    right_leg, left_leg, leg_correlation = st.columns(3)
     with right_leg:
         plots.single_plot(measurements, yvar="leggroin_dx", yvar_name="Leg roin dx (cm)", plot_title="Leg roin dx Time Evolution", style_color=color)
+        plots.single_histo_with_mean(measurements, yvar="leggroin_dx", yvar_name="Leg roin dx (cm)", plot_title="Leg roin dx Distribution", style_color=color)
     with left_leg:
         plots.single_plot(measurements, yvar="leggroin_sx", yvar_name="Leg roin sx (cm)", plot_title="Leg roin sx Time Evolution", style_color=color)
+        plots.single_histo_with_mean(measurements, yvar="leggroin_sx", yvar_name="Leg roin sx (cm)", plot_title="Leg roin sx Distribution", style_color=color)
+    with leg_correlation:
+        plots.correlation_plot(measurements, xvar="leggroin_dx", xvar_name="Leg roin dx (cm)", yvar="leggroin_sx", yvar_name="Leg roin sx (cm)", plot_title="Leg Roin Correlation", style_color=color)

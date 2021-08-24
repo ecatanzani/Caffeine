@@ -124,7 +124,7 @@ def macro_plain(measurements: dict, style_color: str):
     
     st.write(macro + weight_chart)
 
-def macro_stack(measurements: dict, style_color: str):
+def macro_stack(measurements: dict):
 
     time_data = pd.DataFrame({
         'Date': measurements['date'], 
@@ -141,10 +141,10 @@ def macro_stack(measurements: dict, style_color: str):
 
     stack = alt.Chart(time_data).transform_fold(
         ['Macro1', 'Macro2', 'Macro3'],
-        as_=["macros", "value"],
+        as_=["macros", "Macro"],
     ).mark_area(opacity=0.3).encode(
         x="Date:T",
-        y=alt.Y("value:Q", stack=True),
+        y=alt.Y("Macro:Q", stack=True),
         color=alt.Color('macros:N', scale=alt.Scale(domain=['Macro1', 'Macro2', 'Macro3'], range=color_range, type="ordinal"))
     ).properties(title='Macros - Stack Wiew').interactive()
 
@@ -177,3 +177,51 @@ def single_histo_with_mean(measurements: dict, yvar: str, yvar_name: str, plot_t
     )
 
     st.write(bar+rule)
+
+def correlation_plot(measurements: dict, xvar: str, xvar_name: str, yvar: str, yvar_name: str, plot_title: str, style_color: str):
+
+    data = pd.DataFrame({
+        xvar_name: measurements[xvar],
+        yvar_name: measurements[yvar]
+    })
+
+    corr_plot = alt.Chart(data).mark_point(
+        filled=False,
+        size=80,
+        color=style_color,
+        opacity=0.8
+    ).encode(
+        x=xvar_name,
+        y=yvar_name
+    ).properties(title=plot_title).interactive()
+
+    st.write(corr_plot)
+
+def weight_macro_correlation_plot(measurements: dict):
+
+    data = pd.DataFrame({
+        'Weight': measurements['weight'],
+        'Macro1': measurements['macro1'], 
+        'Macro2': measurements['macro2'], 
+        'Macro3': measurements['macro3'] 
+    })
+
+    orange = '#ff7f0e'
+    green = '#2ca02c'
+    sky = '#17becf'
+    color_range = [orange, green, sky]
+
+    corr_plot = alt.Chart(data).transform_fold(
+        ['Macro1', 'Macro2', 'Macro3'],
+        as_=["macros", "Macro"],
+    ).mark_point(
+        filled=False,
+        size=80,
+        opacity=0.8
+    ).encode(
+        x='Weight',
+        y=alt.Y("Macro:Q"),
+        color=alt.Color('macros:N', scale=alt.Scale(domain=['Macro1', 'Macro2', 'Macro3'], range=color_range, type="ordinal"))
+    ).properties(title='Weight and Macros correlation').interactive()
+
+    st.write(corr_plot)
