@@ -1,7 +1,4 @@
-from rosetta import mean_value
 import pandas as pd
-import datetime
-
 
 def prune(measures: list, split_dx_sx: bool = False) -> list:
     pruned_list = []
