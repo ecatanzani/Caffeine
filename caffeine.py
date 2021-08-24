@@ -7,12 +7,12 @@ import stmoduls
 
 def main():
     # Set the app
-    file, all_trends, trend, color = stmoduls.app_settings()
+    file, clinic_file, all_trends, trend, color = stmoduls.app_settings()
     if file is not None:
         # Read the input xlsx file
         header, measurements = extractor.extract(file)
         # Set the header information
-        stmoduls.client_details((header, measurements))
+        stmoduls.client_details((header, measurements), clinic_file)
         
         if all_trends:
             # Weight plots

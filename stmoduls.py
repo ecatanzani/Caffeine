@@ -12,8 +12,9 @@ def app_settings() -> tuple:
     st.sidebar.write('**Settings**')
     
     st.sidebar.write('File selection')
-    file = st.sidebar.file_uploader("Select an xlsx file to upload...", help='Pick a file to process')
-    
+    file = st.sidebar.file_uploader("Upload an XLSX file", help='Pick a file to process')
+    clinic_file = st.sidebar.file_uploader("Upload a clinic file", help='Pick a clinic file to read')
+
     st.sidebar.write('Trend selection')
     all_trends = st.sidebar.checkbox('Show all trends', value=True)
     trend = str()
@@ -23,16 +24,19 @@ def app_settings() -> tuple:
     st.sidebar.write('Plot customization')
     color = st.sidebar.color_picker("Pick a color", '#7200F9', help='Plot color')
 
-    return (file, all_trends, trend, color)
+    return (file, clinic_file, all_trends, trend, color)
 
-def client_details(details: tuple):
+def client_details(details: tuple, clinic: str):
 
     expander = st.expander(label="Expand client details")
     with expander:
         if st.checkbox('Expand client details', value=False, help='Show client details'):
             display.display_client_details(details[0])
-        if st.checkbox('Expand client clinic', value=False, help='Show client clinic'):
-            st.text('Clinic to be implemented')
+        if clinic is not None:
+            if st.checkbox('Expand client clinic', value=False, help='Show client clinic'):
+                for line in clinic:
+                    decoded_line = str(line.rstrip(),'utf-8')
+                    st.text(decoded_line)
         if st.checkbox('Expand measurements', value=False, help='Show all measurements'):
             display.display_dataset(details[1])
     st.write("")
