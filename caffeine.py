@@ -19,7 +19,7 @@ def app_settings() -> tuple:
     st.sidebar.write('Trend selection')
     all_trends = st.sidebar.checkbox('Show all trends', value=True)
     trend = str()
-    if not trend:
+    if not all_trends:
         trend = st.sidebar.selectbox('Select a trend to analyze...', ('Weight', 'Shoulder', 'Chest', 'Arms', 'Waist', 'Legs', 'Calfs', 'Buttock'), index=0)
 
     st.sidebar.write('Plot customization')
@@ -30,7 +30,7 @@ def app_settings() -> tuple:
 def main():
     file, all_trends, trend, color = app_settings()
     if file is not None:
-        header, measurements = extractor.extract(file.name)
+        header, measurements = extractor.extract(file)
         
         if st.checkbox('Show client details', value=False):
             display.display_client_details(header)
