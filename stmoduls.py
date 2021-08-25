@@ -1,4 +1,5 @@
 import streamlit as st
+import docx2txt
 import display
 import plots
 
@@ -12,8 +13,8 @@ def app_settings() -> tuple:
     st.sidebar.write('**Settings**')
     
     st.sidebar.write('File selection')
-    file = st.sidebar.file_uploader("Upload an XLSX file", help='Pick a file to process')
-    clinic_file = st.sidebar.file_uploader("Upload a clinic file", help='Pick a clinic file to read')
+    file = st.sidebar.file_uploader("Upload a CHECK file", help='Pick a file to process', accept_multiple_files=False, type=['xlsx'])
+    clinic_file = st.sidebar.file_uploader("Upload a clinic file", help='Pick a clinic file to read', accept_multiple_files=False, type=['txt', 'docx'])
 
     st.sidebar.write('Trend selection')
     all_trends = st.sidebar.checkbox('Show all trends', value=True)
@@ -26,17 +27,24 @@ def app_settings() -> tuple:
 
     return (file, clinic_file, all_trends, trend, color)
 
-def client_details(details: tuple, clinic: str):
+def parse_text_clinic(clinic: str):
+    for line in clinic:
+        decoded_line = str(line.rstrip(),'utf-8')
+        st.text(decoded_line)
+def parse_docx_clinic(clinic: str):
+    st.text(docx2txt.process(clinic))
 
+def client_details(details: tuple, clinic: str):
     expander = st.expander(label="Expand client details")
     with expander:
         if st.checkbox('Expand client details', value=False, help='Show client details'):
             display.display_client_details(details[0])
         if clinic is not None:
             if st.checkbox('Expand client clinic', value=False, help='Show client clinic'):
-                for line in clinic:
-                    decoded_line = str(line.rstrip(),'utf-8')
-                    st.text(decoded_line)
+                if (clinic.name).endswith('.txt'):
+                    parse_text_clinic(clinic)
+                if (clinic.name).endswith('.docx'):
+                    parse_docx_clinic(clinic)
         if st.checkbox('Expand measurements', value=False, help='Show all measurements'):
             display.display_dataset(details[1])
     st.write("")
