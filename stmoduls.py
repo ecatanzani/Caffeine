@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import docx2txt
 import display
 import plots
@@ -154,7 +155,7 @@ def buttock(measurements: dict, color: str):
     plots.single_plot(measurements, yvar="buttock", yvar_name="Nuttock (cm)", plot_title="Buttock Time Evolution", style_color=color)
     display.display_var_details(measurements, var_title="buttock", var="buttock", var_name="Buttock (cm)", mu="cm", plot_title="Buttock Distribution", style_color=color)
 
-def plicometry(plicometry_measurements: dict, color: str):
+def plicometry(header: dict, plicometry_measurements: dict, color: str):
     st.write('# Plicometry')
 
     axillary, pectoral, side = st.columns(3)
@@ -165,9 +166,16 @@ def plicometry(plicometry_measurements: dict, color: str):
     with side:
         plots.single_plot(plicometry_measurements, yvar="side", yvar_name="Side (cm)", plot_title="Side Time Evolution", style_color=color, reverse_bullets=True)
     
+    axillary_det, pectoral_det, side_det = st.columns(3)
+    with axillary:
+        display.display_var_details(plicometry_measurements, var_title="anxillary", var="axillary", var_name="Anxillary (cm)", mu="cm", plot_title="Anxillary Distribution", style_color=color)
+    with pectoral:
+        display.display_var_details(plicometry_measurements, var_title="pectoral", var="pectoral", var_name="Pectoral (cm)", mu="cm", plot_title="Pectoral Distribution", style_color=color)
+    with side:
+        display.display_var_details(plicometry_measurements, var_title="side", var="side", var_name="Side (cm)", mu="cm", plot_title="Side Distribution", style_color=color)
+    
     
     scapula, navel, triceps = st.columns(3)
-    
     with scapula:
         plots.single_plot(plicometry_measurements, yvar="scapula", yvar_name="Scapula (cm)", plot_title="Scapula Time Evolution", style_color=color, reverse_bullets=True)
     with navel:
@@ -175,7 +183,49 @@ def plicometry(plicometry_measurements: dict, color: str):
     with triceps:
         plots.single_plot(plicometry_measurements, yvar="triceps", yvar_name="Triceps (cm)", plot_title="Triceps Time Evolution", style_color=color, reverse_bullets=True)
 
+    scapula_det, navel_det, triceps_det = st.columns(3)
+    with scapula_det:
+        display.display_var_details(plicometry_measurements, var_title="scapula", var="scapula", var_name="Scapula (cm)", mu="cm", plot_title="Scapula Distribution", style_color=color)
+    with navel_det:
+        display.display_var_details(plicometry_measurements, var_title="navel", var="navel", var_name="Navel (cm)", mu="cm", plot_title="Navel Distribution", style_color=color)
+    with triceps_det:
+        display.display_var_details(plicometry_measurements, var_title="triceps", var="triceps", var_name="Triceps (cm)", mu="cm", plot_title="Triceps Distribution", style_color=color)
+
     thich, _, _ = st.columns(3)
-    
     with thich:
         plots.single_plot(plicometry_measurements, yvar="thich", yvar_name="Thich (cm)", plot_title="Thich Time Evolution", style_color=color, reverse_bullets=True)
+    
+    thich_det, _, _ = st.columns(3)
+    with thich_det:
+        display.display_var_details(plicometry_measurements, var_title="thich", var="thich", var_name="Thich (cm)", mu="cm", plot_title="Thich Distribution", style_color=color)
+    
+    expander = st.expander(label="Expand plicometric trades")
+    with expander:
+        plots.plicometry_trade_all(plicometry_measurements)
+    expander = st.expander(label="Expand plicometric correlation trades")
+    with expander:
+        plots.plicometry_correlation_trades(plicometry_measurements, style_color=color)
+    
+    # Build reduced DF
+    reduced_dr = pd.DataFrame({
+        "axillary": plicometry_measurements['axillary'],
+        "pectoral": plicometry_measurements['pectoral'],
+        "side": plicometry_measurements['side'],
+        "scapula": plicometry_measurements['scapula'],
+        "navel": plicometry_measurements['navel'],
+        "triceps": plicometry_measurements['triceps'],
+        "thich": plicometry_measurements['thich']
+    })
+    
+    reduced_dr["sum"] = reduced_dr.sum(axis=1)
+    reduced_dr["sum2"] = pow(reduced_dr["sum"],2)
+    reduced_dr["density"] = (1.112-(0.00043499*reduced_dr["sum"]) + (0.00000055*reduced_dr["sum2"]) - (0.00028826*header['age']))
+    reduced_dr["jp"] = (495/reduced_dr['density']-450)
+    
+    # Add date to the reduced DF as last step (otherwise sum is altered)
+    reduced_dr["Date"] = plicometry_measurements['date']
+    
+    plots.single_plot_df(reduced_dr, yvar="density", plot_title="Density Time Evolution", style_color=color, reverse_bullets=True)
+    plots.single_plot_df(reduced_dr, yvar="jp", plot_title="JP Time Evolution", style_color=color, reverse_bullets=True)
+
+    

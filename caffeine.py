@@ -33,7 +33,7 @@ def main():
             # Buttock plots
             stmoduls.buttock(measurements, color)
             # Plicometry plots
-            stmoduls.plicometry(plicometry, color_plico)
+            stmoduls.plicometry(header, plicometry, color_plico)
 
         else:
             st.text('Still to be implemented')

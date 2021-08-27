@@ -67,6 +67,38 @@ def single_plot(measurements: dict, yvar: str, yvar_name: str, plot_title: str, 
 
     st.write(chart + circles)
 
+def single_plot_df(df: pd.DataFrame, yvar: str, plot_title: str, style_color: str, reverse_bullets=False):
+    
+    df['color'] = get_slope_color(df[yvar], reverse=reverse_bullets)
+
+    chart = alt.Chart(df).mark_line(clip=True).mark_area(
+        line={'color': style_color},
+        color=alt.Gradient(
+            gradient='linear',
+            stops=[
+                alt.GradientStop(color='white', offset=0), 
+                alt.GradientStop(color=style_color, offset=1)],
+                x1=1,
+                x2=1,
+                y1=1,
+                y2=0
+        )
+        ).encode(
+            alt.X('Date:T'),
+            alt.Y(f"{yvar}:Q")
+        ).properties(title=plot_title).interactive()
+
+    circles = alt.Chart(df).mark_point(
+        filled=True,
+        size=100
+    ).encode(
+        x='Date:T',
+        y=f'{yvar}:Q',
+        color = alt.Color('color', legend=None, scale=None)
+    ).properties(title=plot_title).interactive()
+
+    st.write(chart + circles)
+
 def macro_plain(measurements: dict, style_color: str):
     
     time_data = pd.DataFrame({
@@ -226,3 +258,70 @@ def weight_macro_correlation_plot(measurements: dict):
     ).properties(title='Weight and Macros correlation').interactive()
 
     st.write(corr_plot)
+
+def plicometry_trade_all(measurements: dict):
+
+    time_data = pd.DataFrame({
+        'Date': measurements['date'],
+        'Axillary': measurements['axillary'], 
+        'Pectoral': measurements['pectoral'], 
+        'Side': measurements['side'],
+        'Scapula': measurements['scapula'],
+        'Navel': measurements['navel'],
+        'Triceps': measurements['triceps'],
+        'Thich': measurements['thich']
+    })
+
+    blue ='#1f77b4'
+    orange = '#ff7f0e'
+    green = '#2ca02c'
+    red = '#d62728'
+    violet = '#9467bd'
+    pink = '#e377c2'
+    sky = '#17becf'
+
+    color_range = [blue, orange, green, red, violet, pink, sky]
+
+    plico_plot = alt.Chart(time_data).transform_fold(
+        ['Axillary', 'Pectoral', 'Side', 'Scapula', 'Navel', 'Triceps', 'Thich'],
+        as_=["Plicometry", "Plicometric Value"],
+    ).mark_circle(
+        size=80,
+        opacity=0.5
+    ).encode(
+        x='Date:T',
+        y=alt.Y("Plicometric Value:Q"),
+        color=alt.Color('Plicometry:N', scale=alt.Scale(domain=['Axillary', 'Pectoral', 'Side', 'Scapula', 'Navel', 'Triceps', 'Thich'], range=color_range, type="ordinal"))
+    ).properties(title='Plicometric Value Cumulative Time Distribution')
+
+    plico_lines = plico_plot.transform_loess('Date', 'Plicometric Value', groupby=['Plicometry']).mark_line(size=4).interactive()
+
+    st.write(plico_plot + plico_lines)
+
+def plicometry_correlation_trades(measurements: dict, style_color: str):
+    
+    data = pd.DataFrame({
+        'Axillary': measurements['axillary'], 
+        'Pectoral': measurements['pectoral'], 
+        'Side': measurements['side'],
+        'Scapula': measurements['scapula'],
+        'Navel': measurements['navel'],
+        'Triceps': measurements['triceps'],
+        'Thich': measurements['thich']
+    })
+
+    corr = alt.Chart(data).mark_circle(
+        size=100,
+        color=style_color
+    ).encode(
+        alt.X(alt.repeat("column"), type='quantitative'),
+        alt.Y(alt.repeat("row"), type='quantitative')
+    ).properties(
+        width=150,
+        height=150
+    ).repeat(
+        row=['Axillary', 'Pectoral', 'Side', 'Scapula', 'Navel', 'Triceps', 'Thich'],
+        column=['Thich', 'Triceps', 'Navel', 'Scapula', 'Side', 'Pectoral', 'Axillary']
+    ).interactive()
+
+    st.write(corr)
