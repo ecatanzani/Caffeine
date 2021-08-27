@@ -26,6 +26,12 @@ def app_settings() -> tuple:
     st.sidebar.write('Plot customization')
     color = st.sidebar.color_picker("Circunferences color", '#7200F9', help='Plot color')
     color_plico = st.sidebar.color_picker("Plicometry color", '#83F900', help='Plicometry color')
+    
+    st.sidebar.write('**Developer Info**')
+    if st.sidebar.checkbox(label="Discover Who I Am"):
+        st.sidebar.text("Developed by Enrico Catanzani")
+        st.sidebar.text("All rights reserved")
+        st.sidebar.markdown("check out my [GitHub](https://github.com/ecatanzani)")
 
     return (file, clinic_file, all_trends, trend, color, color_plico)
 
