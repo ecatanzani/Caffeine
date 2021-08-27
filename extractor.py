@@ -41,9 +41,6 @@ def prune(measures: list, split_dx_sx: bool = False, int_value: bool = False) ->
 def extract(file: str) -> tuple:
     df = pd.read_excel(file)
 
-    #print(df)
-    #sys.exit()
-
     # Automatically detect the number of columns. Thus the number of measurements
     end_column = len(df.columns)
     # Starting column
@@ -76,7 +73,15 @@ def extract(file: str) -> tuple:
     check_leghalf = prune(df.iloc[25].to_list()[start_column:end_column], split_dx_sx=True)
     check_calf = prune(df.iloc[26].to_list()[start_column:end_column], split_dx_sx=True)
     check_buttock = prune(df.iloc[27].to_list()[start_column:end_column])
-    
+    # Parse plicometry
+    check_axillary = prune(df.iloc[31].to_list()[start_column:end_column])
+    check_pectoral = prune(df.iloc[32].to_list()[start_column:end_column])
+    check_side = prune(df.iloc[33].to_list()[start_column:end_column])
+    check_scapula = prune(df.iloc[34].to_list()[start_column:end_column])
+    check_navel = prune(df.iloc[35].to_list()[start_column:end_column])
+    check_triceps = prune(df.iloc[36].to_list()[start_column:end_column])
+    check_thigh = prune(df.iloc[37].to_list()[start_column:end_column])
+
     check_header = {
         "name": name,
         "surname": surname,
@@ -105,4 +110,15 @@ def extract(file: str) -> tuple:
         "buttock": check_buttock
     }
 
-    return (check_header, check_measurements)
+    check_plicometry = {
+        "date": check_dates,
+        "axillary": check_axillary,
+        "pectoral": check_pectoral,
+        "side": check_side,
+        "scapula": check_scapula,
+        "navel": check_navel,
+        "triceps": check_triceps,
+        "thich": check_thigh
+    }
+
+    return (check_header, check_measurements, check_plicometry)

@@ -8,10 +8,10 @@ import stmoduls
 
 def main():
     # Set the app
-    file, clinic_file, all_trends, trend, color = stmoduls.app_settings()
+    file, clinic_file, all_trends, trend, color, color_plico = stmoduls.app_settings()
     if file is not None:
         # Read the input xlsx file
-        header, measurements = extractor.extract(file)
+        header, measurements, plicometry = extractor.extract(file)
         # Set the header information
         stmoduls.client_details((header, measurements), clinic_file)
         
@@ -32,7 +32,8 @@ def main():
             stmoduls.calf(measurements, color)
             # Buttock plots
             stmoduls.buttock(measurements, color)
-            
+            # Plicometry plots
+            stmoduls.plicometry(plicometry, color_plico)
 
         else:
             st.text('Still to be implemented')

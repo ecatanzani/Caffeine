@@ -23,9 +23,10 @@ def app_settings() -> tuple:
         trend = st.sidebar.selectbox('Select a trend to analyze...', ('Weight', 'Shoulder', 'Chest', 'Arms', 'Waist', 'Legs', 'Calfs', 'Buttock'), index=0)
 
     st.sidebar.write('Plot customization')
-    color = st.sidebar.color_picker("Pick a color", '#7200F9', help='Plot color')
+    color = st.sidebar.color_picker("Circunferences color", '#7200F9', help='Plot color')
+    color_plico = st.sidebar.color_picker("Plicometry color", '#83F900', help='Plicometry color')
 
-    return (file, clinic_file, all_trends, trend, color)
+    return (file, clinic_file, all_trends, trend, color, color_plico)
 
 def parse_text_clinic(clinic: str):
     for line in clinic:
@@ -152,3 +153,29 @@ def buttock(measurements: dict, color: str):
 
     plots.single_plot(measurements, yvar="buttock", yvar_name="Nuttock (cm)", plot_title="Buttock Time Evolution", style_color=color)
     display.display_var_details(measurements, var_title="buttock", var="buttock", var_name="Buttock (cm)", mu="cm", plot_title="Buttock Distribution", style_color=color)
+
+def plicometry(plicometry_measurements: dict, color: str):
+    st.write('# Plicometry')
+
+    axillary, pectoral, side = st.columns(3)
+    with axillary:
+        plots.single_plot(plicometry_measurements, yvar="axillary", yvar_name="Axillary (cm)", plot_title="Axillary Time Evolution", style_color=color, reverse_bullets=True)
+    with pectoral:
+        plots.single_plot(plicometry_measurements, yvar="pectoral", yvar_name="Pectoral (cm)", plot_title="Pectoral Time Evolution", style_color=color, reverse_bullets=True)
+    with side:
+        plots.single_plot(plicometry_measurements, yvar="side", yvar_name="Side (cm)", plot_title="Side Time Evolution", style_color=color, reverse_bullets=True)
+    
+    
+    scapula, navel, triceps = st.columns(3)
+    
+    with scapula:
+        plots.single_plot(plicometry_measurements, yvar="scapula", yvar_name="Scapula (cm)", plot_title="Scapula Time Evolution", style_color=color, reverse_bullets=True)
+    with navel:
+        plots.single_plot(plicometry_measurements, yvar="navel", yvar_name="Navel (cm)", plot_title="Navel Time Evolution", style_color=color, reverse_bullets=True)
+    with triceps:
+        plots.single_plot(plicometry_measurements, yvar="triceps", yvar_name="Triceps (cm)", plot_title="Triceps Time Evolution", style_color=color, reverse_bullets=True)
+
+    thich, _, _ = st.columns(3)
+    
+    with thich:
+        plots.single_plot(plicometry_measurements, yvar="thich", yvar_name="Thich (cm)", plot_title="Thich Time Evolution", style_color=color, reverse_bullets=True)
