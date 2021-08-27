@@ -1,3 +1,4 @@
+from logging import StringTemplateStyle
 import streamlit as st
 import pandas as pd
 import extractor
@@ -19,8 +20,18 @@ def main():
             stmoduls.weight(measurements, color)
             # Shoulders plots
             stmoduls.shoulders(measurements, color)
+            # Chest plots
+            stmoduls.chest(measurements, color)
+            # Arm plots
+            stmoduls.arm(measurements, color)
+            # Waist plots
+            stmoduls.waist(measurements, color)
             # Legs plots
             stmoduls.legs(measurements, color)
+            # Calf plots
+            stmoduls.calf(measurements, color)
+            # Buttock plots
+            stmoduls.buttock(measurements, color)
             
 
         else:

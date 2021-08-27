@@ -31,12 +31,12 @@ def get_slope_color(values: list, reverse=False) -> list:
 
     return colors
     
-def single_plot(measurements: dict, yvar: str, yvar_name: str, plot_title: str, style_color: str):
+def single_plot(measurements: dict, yvar: str, yvar_name: str, plot_title: str, style_color: str, reverse_bullets=False):
     
     time_data = pd.DataFrame({
         'Date': measurements['date'], 
         yvar_name: measurements[yvar],
-        'color': get_slope_color(measurements[yvar], reverse=False)
+        'color': get_slope_color(measurements[yvar], reverse=reverse_bullets)
     })
     
     chart = alt.Chart(time_data).mark_line(clip=True).mark_area(
@@ -73,9 +73,9 @@ def macro_plain(measurements: dict, style_color: str):
         'Date': measurements['date'], 
         'Weight': measurements['weight'],
         'weight_color_bullets': get_slope_color(measurements['weight'], reverse=False),
-        'Macro1': measurements['macro1'], 
-        'Macro2': measurements['macro2'], 
-        'Macro3': measurements['macro3']
+        'Carbo': measurements['carbo'], 
+        'Proteins': measurements['proteins'], 
+        'Fat': measurements['fat']
     })
 
     weight_chart = alt.Chart(time_data).mark_line(clip=True).mark_area(
@@ -96,14 +96,15 @@ def macro_plain(measurements: dict, style_color: str):
             alt.Y('Weight:Q')
         ).interactive()
 
-    #weight_circles = alt.Chart(time_data).mark_point(
-    #    filled=True,
-    #    size=100
-    #).encode(
-    #    x='Date:T',
-    #    y='Weight:Q',
-    #    color = alt.Color('weight_color_bullets', legend=None, scale=None)
-    #).interactive()
+    weight_circles = alt.Chart(time_data).mark_point(
+        filled=False,
+        size=80,
+        opacity=0.7
+    ).encode(
+        x='Date:T',
+        y='Weight:Q',
+        color = alt.Color('weight_color_bullets', legend=False, scale=None)
+    ).interactive()
     
     orange = '#ff7f0e'
     green = '#2ca02c'
@@ -111,7 +112,7 @@ def macro_plain(measurements: dict, style_color: str):
     color_range = [orange, green, sky]
 
     macro = alt.Chart(time_data).transform_fold(
-        ['Macro1', 'Macro2', 'Macro3'],
+        ['Carbo', 'Proteins', 'Fat'],
         as_=["macros", "value"],
     ).mark_line(
         size=3,
@@ -119,7 +120,7 @@ def macro_plain(measurements: dict, style_color: str):
     ).encode(
         x='Date:T',
         y=alt.Y("value:Q"),
-        color=alt.Color('macros:N', scale=alt.Scale(domain=['Macro1', 'Macro2', 'Macro3'], range=color_range, type="ordinal"))
+        color=alt.Color('macros:N', scale=alt.Scale(domain=['Carbo', 'Proteins', 'Fat'], range=color_range, type="ordinal"))
     ).properties(title='Weight and Macros Time Evolution').interactive()
     
     st.write(macro + weight_chart)
@@ -129,9 +130,9 @@ def macro_stack(measurements: dict):
     time_data = pd.DataFrame({
         'Date': measurements['date'], 
         'Weight': measurements['weight'],
-        'Macro1': measurements['macro1'], 
-        'Macro2': measurements['macro2'], 
-        'Macro3': measurements['macro3'] 
+        'Carbo': measurements['carbo'], 
+        'Proteins': measurements['proteins'], 
+        'Fat': measurements['fat'] 
     })
 
     orange = '#ff7f0e'
@@ -140,19 +141,19 @@ def macro_stack(measurements: dict):
     color_range = [orange, green, sky]
 
     stack = alt.Chart(time_data).transform_fold(
-        ['Macro1', 'Macro2', 'Macro3'],
+        ['Carbo', 'Proteins', 'Fat'],
         as_=["macros", "Macro"],
     ).mark_area(opacity=0.3).encode(
         x="Date:T",
         y=alt.Y("Macro:Q", stack=True),
-        color=alt.Color('macros:N', scale=alt.Scale(domain=['Macro1', 'Macro2', 'Macro3'], range=color_range, type="ordinal"))
+        color=alt.Color('macros:N', scale=alt.Scale(domain=['Carbo', 'Proteins', 'Fat'], range=color_range, type="ordinal"))
     ).properties(title='Macros - Stack Wiew').interactive()
 
     st.write(stack)
 
-def single_histo_with_mean(measurements: dict, yvar: str, yvar_name: str, plot_title: str, style_color: str):
+def single_histo_with_mean(measurements: dict, xvar: str, xvar_name: str, plot_title: str, style_color: str):
 
-    time_data = pd.DataFrame({yvar_name: measurements[yvar]})
+    time_data = pd.DataFrame({xvar_name: measurements[xvar]})
 
     bar = alt.Chart(time_data).mark_bar(
         opacity=0.8,
@@ -167,12 +168,12 @@ def single_histo_with_mean(measurements: dict, yvar: str, yvar_name: str, plot_t
                 y2=0
         )
         ).encode(
-            x=alt.X(f"{yvar_name}:Q", bin=True),
+            x=alt.X(f"{xvar_name}:Q", bin=True),
             y='count()'
         ).properties(title=plot_title).interactive()
 
     rule = alt.Chart(time_data).mark_rule(color='red').encode(
-        x=f"mean({yvar_name}):Q",
+        x=f"mean({xvar_name}):Q",
         size=alt.value(5)
     )
 
@@ -201,9 +202,9 @@ def weight_macro_correlation_plot(measurements: dict):
 
     data = pd.DataFrame({
         'Weight': measurements['weight'],
-        'Macro1': measurements['macro1'], 
-        'Macro2': measurements['macro2'], 
-        'Macro3': measurements['macro3'] 
+        'Carbo': measurements['carbo'], 
+        'Proteins': measurements['proteins'], 
+        'Fat': measurements['fat'] 
     })
 
     orange = '#ff7f0e'
@@ -212,7 +213,7 @@ def weight_macro_correlation_plot(measurements: dict):
     color_range = [orange, green, sky]
 
     corr_plot = alt.Chart(data).transform_fold(
-        ['Macro1', 'Macro2', 'Macro3'],
+        ['Carbo', 'Proteins', 'Fat'],
         as_=["macros", "Macro"],
     ).mark_point(
         filled=False,
@@ -221,7 +222,7 @@ def weight_macro_correlation_plot(measurements: dict):
     ).encode(
         x='Weight',
         y=alt.Y("Macro:Q"),
-        color=alt.Color('macros:N', scale=alt.Scale(domain=['Macro1', 'Macro2', 'Macro3'], range=color_range, type="ordinal"))
+        color=alt.Color('macros:N', scale=alt.Scale(domain=['Carbo', 'Proteins', 'Fat'], range=color_range, type="ordinal"))
     ).properties(title='Weight and Macros correlation').interactive()
 
     st.write(corr_plot)
