@@ -161,7 +161,7 @@ def buttock(measurements: dict, color: str):
     plots.single_plot(measurements, yvar="buttock", yvar_name="Nuttock (cm)", plot_title="Buttock Time Evolution", style_color=color)
     display.display_var_details(measurements, var_title="buttock", var="buttock", var_name="Buttock (cm)", mu="cm", plot_title="Buttock Distribution", style_color=color)
 
-def plicometry(header: dict, plicometry_measurements: dict, color: str):
+def plicometry(header: dict, plicometry_measurements: dict, measurements: dict, color: str):
     st.write('# Plicometry')
 
     axillary, pectoral, side = st.columns(3)
@@ -214,6 +214,7 @@ def plicometry(header: dict, plicometry_measurements: dict, color: str):
     
     # Build reduced DF
     reduced_dr = pd.DataFrame({
+        "weight": measurements['weight'],
         "axillary": plicometry_measurements['axillary'],
         "pectoral": plicometry_measurements['pectoral'],
         "side": plicometry_measurements['side'],
@@ -227,11 +228,20 @@ def plicometry(header: dict, plicometry_measurements: dict, color: str):
     reduced_dr["sum2"] = pow(reduced_dr["sum"],2)
     reduced_dr["density"] = (1.112-(0.00043499*reduced_dr["sum"]) + (0.00000055*reduced_dr["sum2"]) - (0.00028826*header['age']))
     reduced_dr["jp"] = (495/reduced_dr['density']-450)
+    reduced_dr["fm"] = reduced_dr['weight']*reduced_dr['jp']/100
+    reduced_dr["lbm"] = reduced_dr['weight'] - reduced_dr["fm"]
     
     # Add date to the reduced DF as last step (otherwise sum is altered)
     reduced_dr["Date"] = plicometry_measurements['date']
     
-    plots.single_plot_df(reduced_dr, yvar="density", plot_title="Density Time Evolution", style_color=color, reverse_bullets=True)
-    plots.single_plot_df(reduced_dr, yvar="jp", plot_title="JP Time Evolution", style_color=color, reverse_bullets=True)
+    #plots.single_plot_df(reduced_dr, yvar="density", plot_title="Density Time Evolution", style_color=color, reverse_bullets=True)
+    #plots.single_plot_df(reduced_dr, yvar="jp", plot_title="JP Time Evolution", style_color=color, reverse_bullets=True)
+    
+    fat_mass, lean_body_mass, _ = st.columns(3)
+    with fat_mass:
+        plots.single_plot_df(reduced_dr, yvar="fm", plot_title="Fat Mass Time Evolution", style_color=color, reverse_bullets=True)
+    with lean_body_mass:
+        plots.single_plot_df(reduced_dr, yvar="lbm", plot_title="Lean Body Mass Time Evolution", style_color=color, reverse_bullets=False)
+
 
     

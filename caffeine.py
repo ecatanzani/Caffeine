@@ -33,7 +33,7 @@ def main():
             # Buttock plots
             stmoduls.buttock(measurements, color)
             # Plicometry plots
-            stmoduls.plicometry(header, plicometry, color_plico)
+            stmoduls.plicometry(header, plicometry, measurements, color_plico)
 
         else:
             if trend == 'Weight':

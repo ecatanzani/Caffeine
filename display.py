@@ -25,7 +25,7 @@ def display_var_details(measurements: dict, var_title: str, var: str, var_name: 
         st.text(f"Number of measurements: {len(measurements[var])}")
         st.text(f"Min value: {np.amin(np.array(measurements[var]))} {mu}")
         st.text(f"Max value: {np.amax(np.array(measurements[var]))} {mu}")
-        st.text(f"Min value: {round(mean, 2)} {mu}")
+        st.text(f"Mean value: {round(mean, 2)} {mu}")
 
         values_above_mean = 0
         values_below_mean = 0
