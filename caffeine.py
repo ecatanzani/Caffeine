@@ -36,7 +36,33 @@ def main():
             stmoduls.plicometry(header, plicometry, color_plico)
 
         else:
-            st.text('Still to be implemented')
+            if trend == 'Weight':
+                # Weight plots
+                stmoduls.weight(measurements, color)
+            elif trend == 'Shoulders':
+                # Shoulders plots
+                stmoduls.shoulders(measurements, color)
+            elif trend == 'Chest':
+                # Chest plots
+                stmoduls.chest(measurements, color)
+            elif trend == 'Arms':
+                # Arm plots
+                stmoduls.arm(measurements, color)
+            elif trend == 'Waist':
+                # Waist plots
+                stmoduls.waist(measurements, color)
+            elif trend == 'Legs':
+                # Legs plots
+                stmoduls.legs(measurements, color)
+            elif trend == 'Calfs':
+                # Calf plots
+                stmoduls.calf(measurements, color)
+            elif trend == 'Buttock':
+                # Buttock plots
+                stmoduls.buttock(measurements, color)
+            else:
+                # Plicometry plots
+                stmoduls.plicometry(header, plicometry, color_plico)
             
             
 

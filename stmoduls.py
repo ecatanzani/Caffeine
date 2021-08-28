@@ -21,7 +21,7 @@ def app_settings() -> tuple:
     all_trends = st.sidebar.checkbox('Show all trends', value=True)
     trend = str()
     if not all_trends:
-        trend = st.sidebar.selectbox('Select a trend to analyze...', ('Weight', 'Shoulder', 'Chest', 'Arms', 'Waist', 'Legs', 'Calfs', 'Buttock'), index=0)
+        trend = st.sidebar.selectbox('Select a trend to analyze...', ('Weight', 'Shoulders', 'Chest', 'Arms', 'Waist', 'Legs', 'Calfs', 'Buttock', 'Plicometry'), index=0)
 
     st.sidebar.write('Plot customization')
     color = st.sidebar.color_picker("Circunferences color", '#7200F9', help='Plot color')
