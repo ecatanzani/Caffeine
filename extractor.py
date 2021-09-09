@@ -1,5 +1,4 @@
 import pandas as pd
-import sys
 
 def prune(measures: list, split_dx_sx: bool = False, int_value: bool = False) -> list:
     pruned_list = []

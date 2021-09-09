@@ -1,5 +1,4 @@
 import altair as alt
-from altair.vegalite.v4.schema.channels import Color
 import pandas as pd
 import streamlit as st
 

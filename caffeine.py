@@ -1,9 +1,4 @@
-from logging import StringTemplateStyle
-import streamlit as st
-import pandas as pd
 import extractor
-import display
-import plots
 import stmoduls
 
 def main():
