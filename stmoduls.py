@@ -61,28 +61,32 @@ def client_details(details: tuple, clinic: str):
 def weight(measurements: dict, color: str):
     
     st.write('# Weight')
-    weight, weight_macro, weight_macro_stack = st.columns(3)
-    with weight:
-        plots.single_plot(measurements, yvar="weight", yvar_name="Weight (Kg)", plot_title="Weight Time Evolution", style_color=color)
-    with weight_macro:
-        plots.macro_plain(measurements, style_color=color)
-    with weight_macro_stack:
-        plots.macro_stack(measurements)
-    
-    display.display_var_details(measurements, var_title="weight", var="weight", var_name="Weight (Kg)", mu="Kg", plot_title="Weight Distribution", style_color=color)
 
-    st.write('# Macros')
-    wcorr_macro1, wcorr_macro2, wcorr_macro3 = st.columns(3)
-    with wcorr_macro1:
-        plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="carbo", yvar_name="Carbo", plot_title="Weight and Carbo correlation", style_color=color)
-    with wcorr_macro2:
-        plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="proteins", yvar_name="Proteins", plot_title="Weight and Proteins correlation", style_color=color)
-    with wcorr_macro3:
-        plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="fat", yvar_name="Fat", plot_title="Weight and Fat correlation", style_color=color)
-    
-    plots.weight_macro_correlation_plot(measurements)
-    
+    # Show macros if present, otherwise just weight
+    if measurements['carbo']:
+        weight, weight_macro, weight_macro_stack = st.columns(3)
+        with weight:
+            plots.single_plot(measurements, yvar="weight", yvar_name="Weight (Kg)", plot_title="Weight Time Evolution", style_color=color)
+        with weight_macro:
+            plots.macro_plain(measurements, style_color=color)
+        with weight_macro_stack:
+            plots.macro_stack(measurements)
         
+        display.display_var_details(measurements, var_title="weight", var="weight", var_name="Weight (Kg)", mu="Kg", plot_title="Weight Distribution", style_color=color)
+
+        st.write('# Macros')
+        wcorr_macro1, wcorr_macro2, wcorr_macro3 = st.columns(3)
+        with wcorr_macro1:
+            plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="carbo", yvar_name="Carbo", plot_title="Weight and Carbo correlation", style_color=color)
+        with wcorr_macro2:
+            plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="proteins", yvar_name="Proteins", plot_title="Weight and Proteins correlation", style_color=color)
+        with wcorr_macro3:
+            plots.correlation_plot(measurements, xvar="weight", xvar_name="Weight (Kg)", yvar="fat", yvar_name="Fat", plot_title="Weight and Fat correlation", style_color=color)
+        
+        plots.weight_macro_correlation_plot(measurements)
+    else:
+        plots.single_plot(measurements, yvar="weight", yvar_name="Weight (Kg)", plot_title="Weight Time Evolution", style_color=color)
+        display.display_var_details(measurements, var_title="weight", var="weight", var_name="Weight (Kg)", mu="Kg", plot_title="Weight Distribution", style_color=color)
 
 def shoulders(measurements: dict, color: str):
     st.write('# Shoulders')

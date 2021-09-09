@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def prune(measures: list, split_dx_sx: bool = False, int_value: bool = False) -> list:
     pruned_list = []
@@ -60,9 +61,10 @@ def extract(file: str) -> tuple:
     # Parse weight
     check_weight = prune(df.iloc[12].to_list()[start_column:end_column])
     # Parse macros
-    check_carbo = prune(df.iloc[14].to_list()[start_column:end_column], split_dx_sx=False, int_value=True)
-    check_proteins = prune(df.iloc[15].to_list()[start_column:end_column], split_dx_sx=False, int_value=True)
-    check_fat = prune(df.iloc[16].to_list()[start_column:end_column], split_dx_sx=False, int_value=True)
+    macro_status = False if np.nan in (df.iloc[14].to_list()[start_column:end_column]) else True
+    check_carbo = prune(df.iloc[14].to_list()[start_column:end_column], split_dx_sx=False, int_value=True) if macro_status else []
+    check_proteins = prune(df.iloc[15].to_list()[start_column:end_column], split_dx_sx=False, int_value=True) if macro_status else []
+    check_fat = prune(df.iloc[16].to_list()[start_column:end_column], split_dx_sx=False, int_value=True) if macro_status else []
     # Parse circunferences
     check_shoulder = prune(df.iloc[20].to_list()[start_column:end_column])
     check_chest = prune(df.iloc[21].to_list()[start_column:end_column])
