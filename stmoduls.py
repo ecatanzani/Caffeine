@@ -5,10 +5,13 @@ import display
 import plots
 
 def app_settings() -> tuple:
+    
+    version = 1.0
+    train = "stable"
     st.set_page_config(layout="wide")
-    st.write("""
+    st.write(f"""
     # Personal Interactive Status Monitor
-    Caffeine release v1.0 - alpha
+    Caffeine release v{version} - train {train}
     """)
 
     st.sidebar.write('**Settings**')
