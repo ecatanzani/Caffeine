@@ -5,7 +5,6 @@ import display
 import plots
 
 def app_settings() -> tuple:
-    
     version = 1.0
     train = "stable"
     st.set_page_config(layout="wide")
