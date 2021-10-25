@@ -57,7 +57,7 @@ def main():
                 stmoduls.buttock(measurements, color)
             else:
                 # Plicometry plots
-                stmoduls.plicometry(header, plicometry, color_plico)
+                stmoduls.plicometry(header, plicometry, measurements, color_plico)
             
             
 
