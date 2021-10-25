@@ -220,7 +220,6 @@ def plicometry(header: dict, plicometry_measurements: dict, measurements: dict, 
     
     # Build reduced DF
     reduced_dr = pd.DataFrame({
-        "weight": measurements['weight'],
         "axillary": plicometry_measurements['axillary'],
         "pectoral": plicometry_measurements['pectoral'],
         "side": plicometry_measurements['side'],
@@ -231,11 +230,11 @@ def plicometry(header: dict, plicometry_measurements: dict, measurements: dict, 
     })
     
     reduced_dr["sum"] = reduced_dr.sum(axis=1)
-    reduced_dr["sum2"] = pow(reduced_dr["sum"],2)
+    reduced_dr["sum2"] = pow(reduced_dr["sum"], 2)
     reduced_dr["density"] = (1.112-(0.00043499*reduced_dr["sum"]) + (0.00000055*reduced_dr["sum2"]) - (0.00028826*header['age']))
     reduced_dr["jp"] = (495/reduced_dr['density']-450)
-    reduced_dr["fm"] = reduced_dr['weight']*reduced_dr['jp']/100
-    reduced_dr["lbm"] = reduced_dr['weight'] - reduced_dr["fm"]
+    reduced_dr["fm"] =  measurements['weight']*reduced_dr['jp']/100
+    reduced_dr["lbm"] =  measurements['weight'] - reduced_dr["fm"]
     
     # Add date to the reduced DF as last step (otherwise sum is altered)
     reduced_dr["Date"] = plicometry_measurements['date']
